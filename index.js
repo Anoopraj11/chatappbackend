@@ -23,12 +23,8 @@ const MONGO_URL =
 
 mongoose
   .connect(MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    console.log("Connected to DB");
-  })
-  .catch((err) => {
-    console.error("DB connection error:", err);
-  });
+  .then(() => console.log("Database connected successfully"))
+  .catch((err) => console.log("DB connection error:", err));
 
 // Create HTTP server and attach it to Express app
 const server = http.createServer(app);
