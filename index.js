@@ -17,7 +17,9 @@ app.use("/api/messages", messageRoutes);
 
 // Database connection
 const MONGO_URL =
-  process.env.ATLASDB_URL || "mongodb://127.0.0.1:27017/chatapp"; // Use either ATLASDB_URL from .env or fallback to local URL
+  process.env.MONGO_URL ||
+  "mongodb+srv://anooprajpoot955:oQBwhccXlkDyWjIp@cluster0.twaqmd4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"; // Use either ATLASDB_URL from .env or fallback to local URL
+// const MONGO_URL = "mongodb://127.0.0.1:27017/chatapp"; // Use either ATLASDB_URL from .env or fallback to local URL
 
 mongoose
   .connect(MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -40,7 +42,7 @@ server.listen(PORT, () => {
 // Initialize Socket.IO
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: process.env.ORIGIN,
     credentials: true,
   },
 });
