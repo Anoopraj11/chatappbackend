@@ -9,7 +9,27 @@ const http = require("http");
 const app = express();
 require("dotenv").config();
 
-app.use(cors());
+// Set allowed origins
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://popchatapp.netlify.app",
+];
+
+// Configure CORS
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.use("/api/auth", userRoutes);
@@ -18,8 +38,7 @@ app.use("/api/messages", messageRoutes);
 // Database connection
 const MONGO_URL =
   process.env.MONGO_URL ||
-  "mongodb+srv://anooprajpoot955:oQBwhccXlkDyWjIp@cluster0.twaqmd4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"; // Use either ATLASDB_URL from .env or fallback to local URL
-// const MONGO_URL = "mongodb://127.0.0.1:27017/chatapp"; // Use either ATLASDB_URL from .env or fallback to local URL
+  "mongodb+srv://anooprajpoot955:oQBwhccXlkDyWjIp@cluster0.twaqmd4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 mongoose
   .connect(MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -30,7 +49,7 @@ mongoose
 const server = http.createServer(app);
 
 // Start the server
-const PORT = process.env.PORT || 3000; // Default to port 3000 if PORT is not defined in .env
+const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
@@ -38,7 +57,14 @@ server.listen(PORT, () => {
 // Initialize Socket.IO
 const io = new Server(server, {
   cors: {
-    origin: process.env.ORIGIN,
+    origin: (origin, callback) => {
+      if (allowedOrigins.includes(origin) || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST"],
     credentials: true,
   },
 });
