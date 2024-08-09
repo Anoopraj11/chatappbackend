@@ -11,7 +11,7 @@ require("dotenv").config();
 
 // Set allowed origins
 const allowedOrigins = [
-  "http://localhost:5173",
+  "https://chatappannu.onrender.com",
   "https://popchatapp.netlify.app",
 ];
 
